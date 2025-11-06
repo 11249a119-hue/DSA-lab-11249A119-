@@ -1,0 +1,67 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+#define MAX 100
+
+char stack[MAX];
+int top = -1;
+
+// Push a character onto the stack
+void push(char c) {
+    if (top == MAX - 1) {
+        printf("Stack Overflow!\n");
+    } else {
+        stack[++top] = c;
+    }
+}
+
+// Pop a character from the stack
+char pop() {
+    if (top == -1) {
+        return '\0'; // Return null character if empty
+    } else {
+        return stack[top--];
+    }
+}
+
+// Function to check matching brackets
+int isMatchingPair(char opening, char closing) {
+    return (opening == '(' && closing == ')') ||
+           (opening == '{' && closing == '}') ||
+           (opening == '[' && closing == ']');
+}
+
+// Function to check if parentheses are balanced
+int isBalanced(char exp[]) {
+    for (int i = 0; i < strlen(exp); i++) {
+        char c = exp[i];
+
+        if (c == '(' || c == '{' || c == '[') {
+            push(c);
+        } else if (c == ')' || c == '}' || c == ']') {
+            if (top == -1) {
+                return 0; // No opening bracket for this closing one
+            } else if (!isMatchingPair(pop(), c)) {
+                return 0; // Mismatched pair
+            }
+        }
+    }
+
+    // If stack is empty → all brackets matched
+    return (top == -1);
+}
+
+int main() {
+    char expression[MAX];
+
+    printf("Enter an expression: ");
+    scanf("%s", expression);
+
+    if (isBalanced(expression))
+        printf(" Expression is balanced.\n");
+    else
+        printf(" Expression is NOT balanced.\n");
+
+    return 0;
+}
