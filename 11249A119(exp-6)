@@ -1,0 +1,85 @@
+#include <stdio.h>
+#include <ctype.h>  // For isalpha() and isdigit()
+#include <string.h>
+
+#define MAX 100
+
+char stack[MAX];
+int top = -1;
+
+// Push function
+void push(char c) {
+    if (top == MAX - 1)
+        printf("Stack Overflow!\n");
+    else
+        stack[++top] = c;
+}
+
+// Pop function
+char pop() {
+    if (top == -1)
+        return -1;
+    else
+        return stack[top--];
+}
+
+// Function to return precedence of operators
+int precedence(char c) {
+    if (c == '^')
+        return 3;
+    else if (c == '*' || c == '/' || c == '%')
+        return 2;
+    else if (c == '+' || c == '-')
+        return 1;
+    else
+        return 0;
+}
+
+// Main function to convert infix to postfix
+void infixToPostfix(char infix[]) {
+    char postfix[MAX];
+    int j = 0;
+    char ch;
+
+    for (int i = 0; i < strlen(infix); i++) {
+        ch = infix[i];
+
+        if (isalnum(ch)) {
+            // Operand → directly to postfix
+            postfix[j++] = ch;
+        }
+        else if (ch == '(') {
+            push(ch);
+        }
+        else if (ch == ')') {
+            // Pop until '('
+            while (top != -1 && stack[top] != '(')
+                postfix[j++] = pop();
+            pop(); // Remove '('
+        }
+        else {
+            // Operator → pop higher or equal precedence operators
+            while (top != -1 && precedence(stack[top]) >= precedence(ch))
+                postfix[j++] = pop();
+            push(ch);
+        }
+    }
+
+    // Pop remaining operators
+    while (top != -1)
+        postfix[j++] = pop();
+
+    postfix[j] = '\0';  // Null terminate string
+    printf("Postfix Expression: %s\n", postfix);
+}
+
+int main() {
+    char infix[MAX];
+
+    printf("Enter an infix expression: ");
+    scanf("%s", infix);
+
+    infixToPostfix(infix);
+
+    return 0;
+}
