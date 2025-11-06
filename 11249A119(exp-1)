@@ -1,0 +1,159 @@
+#include <stdio.h>
+
+#define MAX 100
+
+// Function prototypes
+void display(int arr[], int n);
+void insert(int arr[], int *n, int pos, int val);
+void delete(int arr[], int *n, int pos);
+int linearSearch(int arr[], int n, int key);
+int binarySearch(int arr[], int n, int key);
+void bubbleSort(int arr[], int n);
+
+int main() {
+    int arr[MAX], n, choice, pos, val, key, result;
+
+    printf("Enter number of elements: ");
+    scanf("%d", &n);
+
+    printf("Enter %d elements:\n", n);
+    for(int i = 0; i < n; i++)
+        scanf("%d", &arr[i]);
+
+    while(1) {
+        printf("\n========== ARRAY OPERATIONS ==========\n");
+        printf("1. Display Array\n");
+        printf("2. Insert Element\n");
+        printf("3. Delete Element\n");
+        printf("4. Linear Search\n");
+        printf("5. Bubble Sort\n");
+        printf("6. Binary Search (After Sorting)\n");
+        printf("7. Exit\n");
+        printf("Enter your choice: ");
+        scanf("%d", &choice);
+
+        switch(choice) {
+            case 1:
+                display(arr, n);
+                break;
+
+            case 2:
+                printf("Enter position (0 to %d): ", n);
+                scanf("%d", &pos);
+                printf("Enter value to insert: ");
+                scanf("%d", &val);
+                insert(arr, &n, pos, val);
+                break;
+
+            case 3:
+                printf("Enter position (0 to %d): ", n - 1);
+                scanf("%d", &pos);
+                delete(arr, &n, pos);
+                break;
+
+            case 4:
+                printf("Enter element to search: ");
+                scanf("%d", &key);
+                result = linearSearch(arr, n, key);
+                if(result != -1)
+                    printf("Element found at index %d\n", result);
+                else
+                    printf("Element not found\n");
+                break;
+
+            case 5:
+                bubbleSort(arr, n);
+                printf("Array sorted successfully!\n");
+                break;
+
+            case 6:
+                printf("Enter element to search: ");
+                scanf("%d", &key);
+                result = binarySearch(arr, n, key);
+                if(result != -1)
+                    printf("Element found at index %d\n", result);
+                else
+                    printf("Element not found\n");
+                break;
+
+            case 7:
+                printf("Exiting program...\n");
+                return 0;
+
+            default:
+                printf("Invalid choice! Try again.\n");
+        }
+    }
+
+    return 0;
+}
+
+// Function to display the array
+void display(int arr[], int n) {
+    printf("Array elements: ");
+    for(int i = 0; i < n; i++)
+        printf("%d ", arr[i]);
+    printf("\n");
+}
+
+// Function to insert an element
+void insert(int arr[], int *n, int pos, int val) {
+    if(*n >= MAX) {
+        printf("Array overflow!\n");
+        return;
+    }
+    for(int i = *n; i > pos; i--)
+        arr[i] = arr[i - 1];
+    arr[pos] = val;
+    (*n)++;
+    printf("Element inserted successfully!\n");
+}
+
+// Function to delete an element
+void delete(int arr[], int *n, int pos) {
+    if(pos >= *n || pos < 0) {
+        printf("Invalid position!\n");
+        return;
+    }
+    for(int i = pos; i < *n - 1; i++)
+        arr[i] = arr[i + 1];
+    (*n)--;
+    printf("Element deleted successfully!\n");
+}
+
+// Function for linear search
+int linearSearch(int arr[], int n, int key) {
+    for(int i = 0; i < n; i++)
+        if(arr[i] == key)
+            return i;
+    return -1;
+}
+
+// Function for bubble sort
+void bubbleSort(int arr[], int n) {
+    int temp;
+    for(int i = 0; i < n - 1; i++) {
+        for(int j = 0; j < n - i - 1; j++) {
+            if(arr[j] > arr[j + 1]) {
+                temp = arr[j];
+                arr[j] = arr[j + 1];
+                arr[j + 1] = temp;
+            }
+        }
+    }
+}
+
+// Function for binary search (array must be sorted)
+int binarySearch(int arr[], int n, int key) {
+    int low = 0, high = n - 1, mid;
+    while(low <= high) {
+        mid = (low + high) / 2;
+        if(arr[mid] == key)
+            return mid;
+        else if(arr[mid] < key)
+            low = mid + 1;
+        else
+            high = mid - 1;
+    }
+    return -1;
+}
